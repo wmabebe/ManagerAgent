@@ -1,0 +1,61 @@
+In this project we have two components.
+An Agent program written in C, and a Manager program written in Java.
+
+The C Agent's are remote 'clients' that manage certain local tasks.
+A manager can oversee multiple Agents. The Manager listens to udp
+packets for beacons. Beacons come in the form of a byte stream which
+the Manager has to decode before taking any action. If the beacon 
+happens to come from a new remote agent, the manager spawns a thread
+to handle it. (Here, handling involves conversing with the remote agent
+via tcp packets. The conversation involves sending a couple of commands
+to the remote, and receiving the responses, intermittently).
+
+Before listeneing for beacons, the Manager will spawn a separate thread
+that will examine the liveliness of remote agents. This thread periodically 
+checks the liveliness of remote Agents by calculating how long it's been 
+since their last beacon has arrived. A timeframe delay of over 2X the beacon's interval
+indicates the remote Agent has died. A death event will be logged in the standard
+output. On the other hand, beacons from Agents that were considered dead might popup
+at anytime. This is considered a resurrection of a dead Agent, and this event is
+also logged.
+
+
+To run:
+
+=>      If running on pyrite, please make sure you're logged into the same name server in all terminals.
+        eg. ssh username@pyrite-ns2.cs.iastate.edu
+   
+        Since we're assuimng both programs are running on the same machine, the programs don't account for
+        remote and local IP addresses. So logging into the same nameserver (-ns1, -ns2, -ns3, -ns4, -ns5) is imperative.
+
+   
+
+1.	javac Manager.java
+	java Manager	
+
+2.	gcc -o agent agent.c -lpthread
+	./agent [tcp_port=21839] [interval=2] [lifetime=10]
+
+		- tcp_port: The tcp port of the agent, default value is 21839.
+		    This port will be used by the manager to establish a
+		    TCP connection with the agent.
+	
+		- interval: Interval of sending beacons, default value is 2 seconds.
+		    Agent will be sending beacons within this interval. This 
+		    value will adjust the minimum sampling interval on the
+		    Manager side.
+
+		- lifetime: For the purposes of simulation, every Agent will have a
+		    lifetime. Default lifetime is 10 beacons. If an Agent has
+                    2 second intervals with 10 lifetimes, it will stay alive for
+		    20 seconds.
+
+		* For the purposes of demonstrating Agent resurrections, Agent's will
+	   	deliberately delay the 3rd beacon. This will be considered as a death
+	   	on the Manager's side. When the fourth beacon arrives, the Manager 
+	   	logs the resurrection event.
+
+
+=>	Overall, there will be a bunch of outputs that will guide the user from both
+	terminals. This isn't a requirement, but it helps to see what's happening in the
+	background.
