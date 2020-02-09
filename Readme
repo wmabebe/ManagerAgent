@@ -20,15 +20,7 @@ at anytime. This is considered a resurrection of a dead Agent, and this event is
 also logged.
 
 
-To run:
-
-=>      If running on pyrite, please make sure you're logged into the same name server in all terminals.
-        eg. ssh username@pyrite-ns2.cs.iastate.edu
-   
-        Since we're assuimng both programs are running on the same machine, the programs don't account for
-        remote and local IP addresses. So logging into the same nameserver (-ns1, -ns2, -ns3, -ns4, -ns5) is imperative.
-
-   
+To run:   
 
 1.	javac Manager.java
 	java Manager	
